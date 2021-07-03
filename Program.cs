@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
 using Serilog.Events;
+using Serilog.Exceptions;
 
 namespace MyHotels.WebApi
 {
@@ -15,11 +16,14 @@ namespace MyHotels.WebApi
     {
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration().WriteTo.File(
-                path: @"logs\log-.txt",
-                outputTemplate: "{Timestamp:yyyy-mm-dd HH:mm:ss.fff zzz} {Level:u3} {Message:lj}{NewLine}{Exception}",
-                rollingInterval: RollingInterval.Day,
-                restrictedToMinimumLevel: LogEventLevel.Information).CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.WithExceptionDetails()
+                .WriteTo.File(
+                    path: @"logs\log-.txt",
+                    outputTemplate: "{Timestamp:yyyy-mm-dd HH:mm:ss.fff zzz} {Level:u3} {Message:lj}{NewLine}{Exception}",
+                    rollingInterval: RollingInterval.Day,
+                    restrictedToMinimumLevel: LogEventLevel.Information)
+                .CreateLogger();
 
             try
             {
