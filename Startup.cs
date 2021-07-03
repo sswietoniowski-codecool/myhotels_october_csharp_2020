@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MyHotels.WebApi.Data;
 
 namespace MyHotels.WebApi
 {
@@ -26,6 +28,11 @@ namespace MyHotels.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<MyHotelsDbContext>(options =>
+            {
+                //options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("MssqlConnection"));
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
