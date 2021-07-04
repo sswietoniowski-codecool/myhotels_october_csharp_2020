@@ -43,7 +43,12 @@ namespace MyHotels.WebApi
             // Automapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddControllers();
+            services.AddControllers()
+                // Solves problem with cyclical dependencies between countries and hotels.
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyHotels.WebApi", Version = "v1" });
