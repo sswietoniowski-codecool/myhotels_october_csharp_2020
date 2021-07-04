@@ -116,5 +116,44 @@ namespace MyHotels.WebApi.Controllers
             }
         }
 
+        // PUT ... api/countries/1
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateCountry(int id, [FromBody] UpdateCountryDto countryDto)
+        {
+            _logger.LogInformation($"{nameof(UpdateCountry)} called...");
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError($"Invalid PUT attempt in {nameof(UpdateCountry)}");
+
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var country = await _uow.Countries.Get(c => c.Id == id);
+
+                if (country == null)
+                {
+                    return BadRequest("Submitted data is invalid!");
+                }
+
+                _mapper.Map(countryDto, country);
+                _uow.Countries.Modify(country);
+                await _uow.Save();
+
+                return NoContent();
+
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, $"Something went wrong in {nameof(UpdateCountry)}");
+
+                return Problem("Internal server error, please try again later...");
+            }
+        }
     }
 }
