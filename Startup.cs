@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyHotels.WebApi.Data;
@@ -38,6 +39,9 @@ namespace MyHotels.WebApi
 
             // UnitOfWork
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            // Automapper
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
